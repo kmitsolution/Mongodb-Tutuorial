@@ -74,8 +74,28 @@ One user has one profile.
   "bio": "Developer",
   "website": "alice.dev"
 }
-```
 
+```
+```
+db.users.aggregate([
+  {
+    $lookup: {
+      from: "profiles",
+      localField: "profileId",
+      foreignField: "_id",
+      as: "profile"
+    }
+  },
+  { $unwind: "$profile" },
+  {
+    $project: {
+      _id: 0,
+      name: 1,
+      bio: "$profile.bio"
+    }
+  }
+])
+```
 ### ✔ When to reference:
 
 * Data is large
